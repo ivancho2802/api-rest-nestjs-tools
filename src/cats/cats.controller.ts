@@ -23,19 +23,29 @@ export class CatsController {
         .string(heading)
     });
 
+    let rowIndex = 2;
+    json.rows.forEach(record => {
+      let columnIndex = 1;
+      Object.keys(record).forEach(columnName => {
+        ws.cell(rowIndex, columnIndex++)
+          .string(record[columnName])
+      });
+      rowIndex++;
+    });
+
     wb.write('ExcelFile.xlsx', function (err, stats) {
       if (err) {
         console.error(err);
       } else {
         console.log(stats); // Prints out an instance of a node.js fs.Stats object
-        
+
         return stats;
       }
     });
 
-    let buddet = await wb.writeToBuffer('ExcelFile.xlsx');
+    let buffer = await wb.writeToBuffer('ExcelFile.xlsx');
 
-    return new StreamableFile(buddet);
+    return new StreamableFile(buffer);
   }
 
   @Post()
